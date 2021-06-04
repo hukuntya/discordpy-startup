@@ -26,6 +26,6 @@ async def on_message(message):
     if message.attachments:
         for attachment in message.attachments:
             if out(message):
-                await message.channel.send(file=attachment.url)
+                await message.channel.send(attachment.url)
 
 client.run(os.environ['DISCORD_BOT_TOKEN'])
