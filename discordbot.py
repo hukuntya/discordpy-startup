@@ -16,7 +16,7 @@ async def on_message(message):
     flag = False
     
     for s in out:
-        if if message.content.count(out) > 0:
+        if if message.content.count(s) > 0:
             flag = True
     
     if flag:
