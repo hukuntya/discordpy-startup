@@ -12,7 +12,7 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content in ['すぐ消', 'すぐけす', 'すぐけし']:
+    if message.content.count('すぐ消') > 0:
         await message.channel.send('言ったな！')
 
 client.run(os.environ['DISCORD_BOT_TOKEN'])
