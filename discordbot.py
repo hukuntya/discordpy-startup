@@ -27,10 +27,7 @@ async def on_message(message):
         for attachment in message.attachments:
             if attachment.url.endswith(("png", "jpg", "jpeg", "gif", "mp3", "mp4", "wav")):
                 if out(message):
-                    title = str(message.author)
-                    description = str(message.content)
-                    embed = discord.Embed(title=title, description=description)
-                    embed.set_image(str(attachment.url))
-                    await message.channel.send(embed=embed)
+                    output = message.author + attachment.url
+                    await message.channel.send(output)
 
 client.run(os.environ['DISCORD_BOT_TOKEN'])
