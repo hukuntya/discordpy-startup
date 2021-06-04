@@ -17,11 +17,11 @@ async def on_command_error(ctx, error):
 async def ping(ctx):
     await ctx.send('pang')
     
-# @client.event
-# async def on_message(message):
-#     if message.author != client.user:
-#         msg = message.content
-#         await client.send_message(message.channel, msg)
+@client.event
+async def on_message(message):
+    if message.author != client.user:
+        msg = message.content
+        await client.send_message(message.channel, msg)
 
 
 bot.run(token)
