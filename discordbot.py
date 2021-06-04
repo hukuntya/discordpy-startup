@@ -1,9 +1,11 @@
-import discord 
+import discord
 import os
-import traceback
 
-bot = discord.Client()
-token = os.environ['DISCORD_BOT_TOKEN']
+client = discord.Client()
+
+@client.event
+async def on_ready():
+    print(f'We have logged in as {client.user}')
 
 @client.event
 async def on_message(message):
@@ -13,4 +15,4 @@ async def on_message(message):
     if message.content.startswith('$hello'):
         await message.channel.send('Hello!')
 
-bot.run(token)
+client.run(os.environ['DISCORD_BOT_TOKEN'])
