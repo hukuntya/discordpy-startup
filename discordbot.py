@@ -19,7 +19,9 @@ async def ping(ctx):
     
 @client.event
 async def on_message(message):
-    await message.channel.send(message.id) 
+    if message.author != client.user:
+        msg = message.content
+        await client.send_message(message.channel, msg)
 
 
 bot.run(token)
