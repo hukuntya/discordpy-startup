@@ -22,9 +22,9 @@ async def on_message(message):
     if flag:
         await message.channel.send('言ったな！')
     
-    if message.attachments:
-        for attachment in message.attachments:
-            if attachment.url.endswith(("png", "jpg", "jpeg")):
-                await message.channel.send(attachment.url)
+#     if message.attachments:
+#         for attachment in message.attachments:
+#             if attachment.url.endswith(("png", "jpg", "jpeg")):
+#                 await message.channel.send(attachment.url)
 
 client.run(os.environ['DISCORD_BOT_TOKEN'])
