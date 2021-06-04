@@ -25,9 +25,7 @@ async def on_message(message):
     
     if message.attachments:
         for attachment in message.attachments:
-            if attachment.url.endswith(("png", "jpg", "jpeg", "gif", "mp3", "mp4", "wav")):
-                if out(message):
-                    output = attachment.url
-                    await message.channel.send(output)
+            if out(message):
+                await message.channel.send(file=attachment.url)
 
 client.run(os.environ['DISCORD_BOT_TOKEN'])
