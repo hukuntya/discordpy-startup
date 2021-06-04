@@ -17,5 +17,9 @@ async def on_command_error(ctx, error):
 async def ping(ctx):
     await ctx.send('pang')
     
+@client.event
+async def on_message(message):
+    await message.channel.send(message.id) 
+
 
 bot.run(token)
