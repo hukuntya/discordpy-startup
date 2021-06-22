@@ -178,4 +178,11 @@ async def on_message(message):
             message.channel.send(f"GAME OVER\nU:{UMC.umc[0]} M:{UMC.umc[1]} C:{UMC.umc[2]}\nSCORE: {UMC.umc[0] + UMC.umc[1] + UMC.umc[2]} HI SCORE: {UMC.hiscore}")
             UMC.reset()
 
+    # メッセージ送信者がBotだった場合は無視する
+    if message.author.bot:
+        return
+    # 「/neko」と発言したら「にゃーん」が返る処理
+    if message.content == '/neko':
+        await message.channel.send('にゃーん')
+        
 client.run(os.environ['DISCORD_BOT_TOKEN'])
