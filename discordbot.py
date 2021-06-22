@@ -161,27 +161,26 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    if message.content == '!dice':
-        if UMC.diceleft > 0:
-            await message.channel.send(f"ROUND:{UMC.round} DICE:{UMC.dice} LEFT DICE:{UMC.diceleft}")
-            time.sleep(1)
-            nk = UMC.roll()
-            await message.channel.send("：".join(nk))
-            time.sleep(1)
-            UMC.check(nk, massage)
-            time.sleep(2)
-            await message.channel.send(f"U:{UMC.umc[0]} M:{UMC.umc[1]} C:{UMC.umc[2]}\nSCORE: {UMC.umc[0] + UMC.umc[1] + UMC.umc[2]}")
-        if UMC.diseleft = 0:
-            time.sleep(1)
-            if (UMC.umc[0] + UMC.umc[1] + UMC.umc[2]) > UMC.hiscore:
-                UMC.hiscore = UMC.umc[0] + UMC.umc[1] + UMC.umc[2]
-            message.channel.send(f"GAME OVER\nU:{UMC.umc[0]} M:{UMC.umc[1]} C:{UMC.umc[2]}\nSCORE: {UMC.umc[0] + UMC.umc[1] + UMC.umc[2]} HI SCORE: {UMC.hiscore}")
-            UMC.reset()
+    try:
+        if message.content == '!dice':
+            if UMC.diceleft > 0:
+                await message.channel.send(f"ROUND:{UMC.round} DICE:{UMC.dice} LEFT DICE:{UMC.diceleft}")
+                time.sleep(1)
+                nk = UMC.roll()
+                await message.channel.send("：".join(nk))
+                time.sleep(1)
+                UMC.check(nk, massage)
+                time.sleep(2)
+                await message.channel.send(f"U:{UMC.umc[0]} M:{UMC.umc[1]} C:{UMC.umc[2]}\nSCORE: {UMC.umc[0] + UMC.umc[1] + UMC.umc[2]}")
+            if UMC.diseleft = 0:
+                time.sleep(1)
+                if (UMC.umc[0] + UMC.umc[1] + UMC.umc[2]) > UMC.hiscore:
+                    UMC.hiscore = UMC.umc[0] + UMC.umc[1] + UMC.umc[2]
+                message.channel.send(f"GAME OVER\nU:{UMC.umc[0]} M:{UMC.umc[1]} C:{UMC.umc[2]}\nSCORE: {UMC.umc[0] + UMC.umc[1] + UMC.umc[2]} HI SCORE: {UMC.hiscore}")
+                UMC.reset()
+    except:
+        await message.channel.send('ERROR')
 
-    # メッセージ送信者がBotだった場合は無視する
-    if message.author.bot:
-        return
-    # 「/neko」と発言したら「にゃーん」が返る処理
     if message.content == '/neko':
         await message.channel.send('にゃーん')
         
