@@ -1,10 +1,21 @@
-import discord
+from discord.ext import commands
 import os
+import traceback
 import time
 import random
+bot = commands.Bot(command_prefix='/')
+token = os.environ['DISCORD_BOT_TOKEN']
 
-class nko():
-    def __init__(self):
+
+@bot.event
+async async def on_command_error(ctx, error):
+    orig_error = getattr(error, "original", error)
+    error_msg = ''.join(traceback.TracebackException.from_exception(orig_error).format())
+    await ctx.send(error_msg)
+
+
+class Nko():
+    async def __init__(self):
         self.round = 1
         self.umc = [0, 0, 0]
         self.diceleft = 3
@@ -12,14 +23,14 @@ class nko():
         self.dice = 5
         self.hiscore = 0
     
-    def reset(self):
+    async def reset(self):
         self.round = 1
         self.umc = [0, 0, 0]
         self.diceleft = 3
         self.nudges = 5
         self.dice = 5
 
-    def roll(self):
+    async def roll(self):
         self.round += 1
         self.diceleft -= 1
         result = []
@@ -31,7 +42,7 @@ class nko():
                 result.append("・")
         return result
     
-    def nudge(self):
+    async def nudge(self):
         self.nudges -= 1
         result = []
         core = ["う", "ま", "ち", "ん", "こ", "お"]
@@ -42,7 +53,7 @@ class nko():
                 result.append("・")
         return result
 
-    def check(self, result, message):
+    async def check(self, result, ctx):
         self.umc[0] += result.count("う") * 500
         self.umc[1] += result.count("ま") * 500
         self.umc[2] += result.count("ち") * 500
@@ -55,37 +66,37 @@ class nko():
 
         # うんち
         if result.count("う") >= 1 and result.count("ん") >= 1 and result.count("ち") >= 1:
-            message.channel.send("UNCHI")
+            ctx.send("UNCHI")
             next += 1
             self.umc[0] += 1000
         # うんこ
         if result.count("う") >= 1 and result.count("ん") >= 1 and result.count("こ") >= 1:
-            message.channel.send("UNKO")
+            ctx.send("UNKO")
             next += 1
             self.umc[0] += 1000
         # おまんこ
         if result.count("お") >= 1 and result.count("ま") >= 1 and result.count("ん") >= 1 and result.count("こ") >= 1:
-            message.channel.send("OMANKO")
+            ctx.send("OMANKO")
             next += 1
             self.umc[1] += 5000
         # まんこ
         elif result.count("ま") >= 1 and result.count("ん") >= 1 and result.count("こ") >= 1:
-            message.channel.send("MANKO")
+            ctx.send("MANKO")
             next += 1
             self.umc[1] += 1000
         # ちんこ
         if result.count("ち") >= 1 and result.count("ん") >= 1 and result.count("こ") >= 1:
-            message.channel.send("CHINKO")
+            ctx.send("CHINKO")
             next += 1
             self.umc[2] += 1000
         # おちんちん
         if result.count("お") >= 1 and result.count("ち") >= 2 and result.count("ん") >= 2:
-            message.channel.send("O C H I N C H I N")
+            ctx.send("O C H I N C H I N")
             next = 10
             self.umc[2] += 10000
         # ちんちん
         elif result.count("ち") >= 2 and result.count("ん") >= 2:
-            message.channel.send("CHINCHIN")
+            ctx.send("CHINCHIN")
             next += 1
             self.umc[2] += 3000
         
@@ -106,7 +117,7 @@ class nko():
             bonus = count - 3
             if bonus > 4: bonus = 4
             self.umc[0] *= (2 + bonus)
-            message.channel.send("".join(["う" for _ in range(count)]))
+            ctx.send("".join(["う" for _ in range(count)]))
         
         # ままま
         count = result.count("ま")
@@ -114,7 +125,7 @@ class nko():
             bonus = count - 3
             if bonus > 4: bonus = 4
             self.umc[1] *= (2 + bonus)
-            message.channel.send("".join(["ま" for _ in range(count)]))
+            ctx.send("".join(["ま" for _ in range(count)]))
 
         # ちちち
         count = result.count("ち")
@@ -122,7 +133,7 @@ class nko():
             bonus = count - 3
             if bonus > 4: bonus = 4
             self.umc[2] *= (2 + bonus)
-            message.channel.send("".join(["ち" for _ in range(count)]))
+            ctx.send("".join(["ち" for _ in range(count)]))
         
         # んんん
         count = result.count("ん")
@@ -130,7 +141,7 @@ class nko():
             bonus = count - 3
             if bonus > 4: bonus = 4
             self.umc = list(map(lambda n: n * -(3 + bonus), self.umc))
-            message.channel.send("".join(["ん" for _ in range(count)]))
+            ctx.send("".join(["ん" for _ in range(count)]))
         
         # こここ
         count = result.count("こ")
@@ -138,7 +149,7 @@ class nko():
             bonus = count - 3
             if bonus > 4: bonus = 4
             self.umc = list(map(lambda n: n * (1.5 + bonus), self.umc))
-            message.channel.send("".join(["こ" for _ in range(count)]))
+            ctx.send("".join(["こ" for _ in range(count)]))
 
         # おおお
         count = result.count("お")
@@ -147,40 +158,34 @@ class nko():
             if bonus > 4: bonus = 4
             self.umc = list(map(lambda n: n * (1.5 + bonus), self.umc))
             self.umc = list(map(lambda n: abs(n), self.umc))
-            message.channel.send("".join(["お" for _ in range(count)]))
+            ctx.send("".join(["お" for _ in range(count)]))
         
         self.umc = list(map(int, self.umc))
 
-client = discord.Client()
+UMC = Nko()
 
-@client.event
-async def on_ready():
-    print(f'We have logged in as {client.user}')
+@bot.command()
+async def dice(ctx):
+    if UMC.diceleft > 0:
+        await ctx.send(f"ROUND:{UMC.round} DICE:{UMC.dice} LEFT DICE:{UMC.diceleft}")
+        time.sleep(1)
+        nk = UMC.roll()
+        await ctx.send("：".join(nk))
+        time.sleep(1)
+        UMC.check(nk, ctx)
+        time.sleep(2)
+        await ctx.send(f"U:{UMC.umc[0]} M:{UMC.umc[1]} C:{UMC.umc[2]}\nSCORE: {UMC.umc[0] + UMC.umc[1] + UMC.umc[2]}")
+    if UMC.diseleft = 0:
+        time.sleep(1)
+        if (UMC.umc[0] + UMC.umc[1] + UMC.umc[2]) > UMC.hiscore:
+            UMC.hiscore = UMC.umc[0] + UMC.umc[1] + UMC.umc[2]
+        ctx.send(f"GAME OVER\nU:{UMC.umc[0]} M:{UMC.umc[1]} C:{UMC.umc[2]}\nSCORE: {UMC.umc[0] + UMC.umc[1] + UMC.umc[2]} HI SCORE: {UMC.hiscore}")
+        UMC.reset()
+
+@bot.command()
+async def ping(ctx):
+    await ctx.send('pong')
 
 
-@client.event
-async def on_message(message):
-    try:
-        if message.content == '!dice':
-            if UMC.diceleft > 0:
-                await message.channel.send(f"ROUND:{UMC.round} DICE:{UMC.dice} LEFT DICE:{UMC.diceleft}")
-                time.sleep(1)
-                nk = UMC.roll()
-                await message.channel.send("：".join(nk))
-                time.sleep(1)
-                UMC.check(nk, massage)
-                time.sleep(2)
-                await message.channel.send(f"U:{UMC.umc[0]} M:{UMC.umc[1]} C:{UMC.umc[2]}\nSCORE: {UMC.umc[0] + UMC.umc[1] + UMC.umc[2]}")
-            if UMC.diseleft = 0:
-                time.sleep(1)
-                if (UMC.umc[0] + UMC.umc[1] + UMC.umc[2]) > UMC.hiscore:
-                    UMC.hiscore = UMC.umc[0] + UMC.umc[1] + UMC.umc[2]
-                message.channel.send(f"GAME OVER\nU:{UMC.umc[0]} M:{UMC.umc[1]} C:{UMC.umc[2]}\nSCORE: {UMC.umc[0] + UMC.umc[1] + UMC.umc[2]} HI SCORE: {UMC.hiscore}")
-                UMC.reset()
-    except:
-        await message.channel.send('ERROR')
-
-    if message.content == '/neko':
-        await message.channel.send('にゃーん')
         
 client.run(os.environ['DISCORD_BOT_TOKEN'])
