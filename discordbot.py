@@ -152,7 +152,6 @@ class nko():
         self.umc = list(map(int, self.umc))
 
 client = discord.Client()
-UMC = nko()    
 
 @client.event
 async def on_ready():
